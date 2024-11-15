@@ -8,7 +8,10 @@ public class InputController : MonoBehaviour
     public static InputController Instance;
     InputAction _test;
     PlayerControls _inputActions;
-    bool pressing;
+    private bool _pressingRight;
+    private bool _pressingLeft;
+    private bool _rotating;
+    private bool _pressingDown;
 
     private void Awake()
     {
@@ -17,36 +20,72 @@ public class InputController : MonoBehaviour
         _test = _inputActions.Movement.MoveRight;
         _inputActions.Movement.MoveRight.performed += MoveRight;
         _inputActions.Movement.MoveRight.canceled += StopMovingRight;
+        _inputActions.Movement.MoveLeft.performed += MoveLeft;
+        _inputActions.Movement.MoveLeft.canceled += StopMovingLeft;
+        _inputActions.Movement.Rotate.performed += Rotate;
+        _inputActions.Movement.Rotate.canceled += StopRotate;
+        _inputActions.Movement.MoveDown.performed += MoveDown;
+        _inputActions.Movement.MoveDown.canceled += StopMovingDown;
     }
     private void OnEnable()
     {
         _inputActions.Enable();
     }
-
     private void OnDisable()
     {
         _inputActions.Disable();
     }
     private void MoveRight(InputAction.CallbackContext ctx)
     {
-        pressing = true;
+        _pressingRight = true;
     }
-    private void StopMovingRight(InputAction.CallbackContext obj)
+    private void StopMovingRight(InputAction.CallbackContext ctx)
     {
-        pressing = false;
+        _pressingRight = false;
     }
-    public bool GetPressing()
+    public bool GetPressingRight()
     {
-        return pressing;
+        return _pressingRight;
+    }
+    private void MoveLeft(InputAction.CallbackContext ctx)
+    {
+        _pressingLeft = true;
+    }
+    private void StopMovingLeft(InputAction.CallbackContext ctx)
+    {
+        _pressingLeft = false;
+    }
+    public bool GetPressingLeft()
+    {
+        return _pressingLeft;
+    }
+    private void Rotate(InputAction.CallbackContext ctx)
+    {
+        _rotating=true;
+    }
+    private void StopRotate(InputAction.CallbackContext ctx)
+    {
+        _rotating = false;
+    }
+    public bool GetRotating()
+    {
+        return _rotating;
+    }
+    private void MoveDown(InputAction.CallbackContext ctx)
+    {
+        _pressingDown = true;
+    }
+    private void StopMovingDown(InputAction.CallbackContext ctx)
+    {
+        _pressingDown = false;
+    }
+    public bool GetPressingDown()
+    {
+        return _pressingDown;
     }
 
-    void Start()
+    public void FalsePressingDown()
     {
-        
-    }
-
-    void Update()
-    {
-        
+        _pressingDown = false;
     }
 }
