@@ -7,13 +7,29 @@ public class Spawner : MonoBehaviour
     public static Spawner Instance;
     public Shape[] AllShapes;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    void Start()
+    {
+        
+    }
+
+    void Update()
+    {
+        
+    }
+
     Shape GetRandomShape()
     {
         int i = Random.Range(0, AllShapes.Length);
-        if(AllShapes[i])
+        if (AllShapes[i])
         {
             return AllShapes[i];
-        } else
+        }
+        else
         {
             Debug.LogWarning("Invalid shape.");
             return null;
@@ -27,24 +43,11 @@ public class Spawner : MonoBehaviour
         if (_shape)
         {
             return _shape;
-        } else
+        }
+        else
         {
             Debug.LogWarning("Invalid shape in spawner.");
             return null;
         }
-    }
-
-    private void Awake()
-    {
-        Instance = this;
-    }
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
     }
 }
