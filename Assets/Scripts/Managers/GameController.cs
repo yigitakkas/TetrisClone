@@ -9,10 +9,7 @@ public class GameController : MonoBehaviour
     Board _gameBoard;
     Spawner _spawner;
     Shape _activeShape;
-    InputAction _test;
-    PlayerControls _inputActions;
-    bool pressing;
-    
+    InputController _inputController;
 
     float _dropInterval = .15f;
     float _timeToDrop;
@@ -22,31 +19,7 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        _inputActions = new PlayerControls();
-        _test = _inputActions.Movement.MoveRight;
-        _inputActions.Movement.MoveRight.performed += MoveRight;
-        _inputActions.Movement.MoveRight.canceled += StopMovingRight;
-    }
-    private void OnEnable()
-    {
-        _inputActions.Enable();
-    }
-
-    private void OnDisable()
-    {
-        _inputActions.Disable();
-    }
-    private void MoveRight(InputAction.CallbackContext ctx)
-    {
-        pressing = true;
-    }
-    private void StopMovingRight(InputAction.CallbackContext obj)
-    {
-        pressing = false;
-    }
-    public bool GetPressing()
-    {
-        return pressing;
+        _inputController = InputController.Instance;
     }
     private void Start()
     {
@@ -79,7 +52,7 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        if (GetPressing() && Time.time > _timeToNextKey)
+        if (_inputController.GetPressing() && Time.time > _timeToNextKey)
         {
             _activeShape.MoveRight();
             _timeToNextKey = Time.time + KeyRepeatRate;
