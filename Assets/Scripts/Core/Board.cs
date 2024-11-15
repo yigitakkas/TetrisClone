@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
+    public static Board Instance;
     public Transform EmptySprite;
     public int Height = 30;
     public int Width = 10;
@@ -12,7 +13,8 @@ public class Board : MonoBehaviour
     Transform[,] _grid;
 
     private void Awake()
-    { 
+    {
+        Instance = this;
         _grid = new Transform[Width, Height];
     }
 
