@@ -5,7 +5,7 @@ using UnityEngine;
 public class Shape : MonoBehaviour
 {
     public bool CanRotate = true;
-    void Move(Vector3 moveDirection)
+    private void Move(Vector3 moveDirection)
     {
         transform.position += moveDirection;
     }

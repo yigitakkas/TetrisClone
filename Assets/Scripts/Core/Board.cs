@@ -18,12 +18,12 @@ public class Board : MonoBehaviour
         _grid = new Transform[Width, Height];
     }
 
-    void Start()
+    private void Start()
     {
         DrawEmptyCells();
     }
 
-    void DrawEmptyCells()
+    private void DrawEmptyCells()
     {
         if(EmptySprite)
         {
@@ -37,6 +37,44 @@ public class Board : MonoBehaviour
                     _clone.transform.parent = transform;
                 }
             }
+        }
+    }
+
+    private bool IsWithinBoard(int x,int y)
+    {
+        return (x >= 0 && x < Width && y >= 0);
+    }
+    private bool IsOccupied(int x, int y, Shape shape)
+    {
+        return (_grid[x, y] != null && _grid[x, y].parent != shape.transform);
+    }
+
+    public bool IsValidPosition(Shape shape)
+    {
+        foreach(Transform child in shape.transform)
+        {
+            Vector2 pos = Vector2Int.RoundToInt(child.position);
+            if(!IsWithinBoard((int) pos.x, (int) pos.y))
+            {
+                return false;
+            }
+            if(IsOccupied((int) pos.x, (int) pos.y, shape))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public void StoreShapeInGrid(Shape shape)
+    {
+        if (shape == null)
+            return;
+        foreach (Transform child in shape.transform)
+        {
+            Vector2 pos = Vector2Int.RoundToInt(child.position);
+            _grid[(int)pos.x, (int)pos.y] = child;
         }
     }
 }
