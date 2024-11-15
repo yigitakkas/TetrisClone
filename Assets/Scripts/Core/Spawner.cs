@@ -7,6 +7,10 @@ public class Spawner : MonoBehaviour
     public static Spawner Instance;
     public Shape[] AllShapes;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
     Shape GetRandomShape()
     {
         int i = Random.Range(0, AllShapes.Length);
@@ -34,17 +38,4 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    private void Awake()
-    {
-        Instance = this;
-    }
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
-    }
 }

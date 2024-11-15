@@ -11,7 +11,13 @@ public class GameController : MonoBehaviour
         _spawner = Spawner.Instance;
         _gameBoard = Board.Instance;
 
-        if(!_spawner)
+        if (_spawner)
+        {
+            Vector3 _roundedPosition = Vector3Int.RoundToInt(_spawner.transform.position);
+            _spawner.transform.position = _roundedPosition;
+        }
+
+        if (!_spawner)
         {
             Debug.Log("Spawner not defined");
         }
