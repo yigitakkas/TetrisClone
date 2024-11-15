@@ -11,11 +11,6 @@ public class GameController : MonoBehaviour
         _spawner = Spawner.Instance;
         _gameBoard = Board.Instance;
 
-        if(_spawner)
-        {
-            _spawner.transform.position = Vectorf.Round(_spawner.transform.position);
-        }
-
         if(!_spawner)
         {
             Debug.Log("Spawner not defined");
