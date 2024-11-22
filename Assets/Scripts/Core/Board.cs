@@ -117,7 +117,7 @@ public class Board : MonoBehaviour
 
     private void ShiftRowsDown(int startY)
     {
-        for(int i = startY; i < Height; i++)
+        for(int i = startY; i < Height; ++i)
         {
             ShiftOneRowDown(i);
         }
@@ -125,7 +125,7 @@ public class Board : MonoBehaviour
 
     public void ClearAllRows()
     {
-        for(int y=0; y < Height; y++)
+        for(int y=0; y < Height; ++y)
         {
             if(IsComplete(y))
             {
@@ -134,5 +134,17 @@ public class Board : MonoBehaviour
                 y--;
             }
         }
+    }
+
+    public bool IsOverLimit(Shape shape)
+    {
+        foreach(Transform child in shape.transform)
+        {
+            if (child.transform.position.y >= Height - Header)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

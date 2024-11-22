@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -28,6 +29,10 @@ public class GameController : MonoBehaviour
     [Range(0.01f, 1f)]
     public float KeyRepeatRateRotate = .2f;
     float _timeToNextKeyRotate;
+
+    private bool _gameOver = false;
+
+    public GameObject GameOverPanel;
 
     private void Awake()
     {
@@ -59,7 +64,10 @@ public class GameController : MonoBehaviour
                 _activeShape = _spawner.SpawnShape();
             }
         }
-
+        if(GameOverPanel)
+        {
+            GameOverPanel.SetActive(false);
+        }
         //_gameBoard = GameObject.FindObjectOfType<Board>();
         //_spawner = GameObject.FindObjectOfType<Spawner>();
     }
@@ -101,7 +109,15 @@ public class GameController : MonoBehaviour
 
             if (!_gameBoard.IsValidPosition(_activeShape))
             {
-                LandShape();
+                Debug.Log("Shape is not in valid position");
+                if (_gameBoard.IsOverLimit(_activeShape))
+                {
+                    Debug.Log("Game Over Detected");
+                    GameOver();
+                } else
+                {
+                    LandShape();
+                }
             }
         }
     }
@@ -119,11 +135,28 @@ public class GameController : MonoBehaviour
 
         _gameBoard.ClearAllRows();
     }
+    private void GameOver()
+    {
+        _activeShape.MoveUp();
+        _gameOver = true;
+        Debug.LogWarning(_activeShape.name + " is over limit");
 
+        if (GameOverPanel)
+        {
+            GameOverPanel.SetActive(true);
+        }
+    }
     private void Update()
     {
-        if (!_gameBoard || !_spawner || !_activeShape)
+        if (!_gameBoard || !_spawner || !_activeShape || _gameOver)
             return;
         PlayerInput();
     }
+
+    public void Restart()
+    {
+        Debug.Log("Restarted");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
 }
