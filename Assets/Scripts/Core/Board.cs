@@ -10,7 +10,7 @@ public class Board : MonoBehaviour
     public int Width = 10;
     public int Header = 8;
 
-    Transform[,] _grid;
+    private Transform[,] _grid;
 
     private void Awake()
     {
@@ -75,6 +75,64 @@ public class Board : MonoBehaviour
         {
             Vector2 pos = Vector2Int.RoundToInt(child.position);
             _grid[(int)pos.x, (int)pos.y] = child;
+        }
+    }
+
+    private bool IsComplete(int y)
+    {
+        for (int x = 0; x < Width; ++x)
+        {
+            if (_grid[x,y] == null)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void ClearRow(int y)
+    {
+        for(int x=0;x <Width; ++x)
+        {
+            if(_grid[x,y] != null)
+            {
+                Destroy(_grid[x, y].gameObject);
+            }
+            _grid[x, y] = null;
+        }
+    }
+
+    private void ShiftOneRowDown(int y)
+    {
+        for(int x = 0; x < Width; ++x)
+        {
+            if(_grid[x,y] != null)
+            {
+                _grid[x, y - 1] = _grid[x, y];
+                _grid[x, y] = null;
+                _grid[x, y - 1].position += new Vector3(0, -1, 0);
+            }
+        }
+    }
+
+    private void ShiftRowsDown(int startY)
+    {
+        for(int i = startY; i < Height; i++)
+        {
+            ShiftOneRowDown(i);
+        }
+    }
+
+    public void ClearAllRows()
+    {
+        for(int y=0; y < Height; y++)
+        {
+            if(IsComplete(y))
+            {
+                ClearRow(y);
+                ShiftRowsDown(y + 1);
+                y--;
+            }
         }
     }
 }

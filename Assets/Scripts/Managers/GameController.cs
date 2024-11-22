@@ -11,7 +11,7 @@ public class GameController : MonoBehaviour
     Shape _activeShape;
     InputController _inputController;
 
-    float _dropInterval = .3f;
+    public float _dropInterval = .3f;
     float _timeToDrop;
     //float _timeToNextKey;
     //[Range(0.02f,1f)]
@@ -31,10 +31,11 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        _inputController = InputController.Instance;
+        
     }
     private void Start()
     {
+        _inputController = InputController.Instance;
         _spawner = Spawner.Instance;
         _gameBoard = Board.Instance;
 
@@ -110,10 +111,13 @@ public class GameController : MonoBehaviour
         _timeToNextKeyDown = Time.time;
         _timeToNextKeyRotate = Time.time;
         _timeToNextKeyLeftRight = Time.time;
+
         _inputController.FalsePressingDown();
         _activeShape.MoveUp();
         _gameBoard.StoreShapeInGrid(_activeShape);
         _activeShape = _spawner.SpawnShape();
+
+        _gameBoard.ClearAllRows();
     }
 
     private void Update()
