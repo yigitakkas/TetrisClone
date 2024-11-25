@@ -365,6 +365,7 @@ MonoBehaviour:
   KeyRepeatRateDown: 0.03
   KeyRepeatRateRotate: 0.25
   GameOverPanel: {fileID: 1484436630}
+  RotIconToggle: {fileID: 8495701060290459124}
 --- !u!4 &83154224
 Transform:
   m_ObjectHideFlags: 0
@@ -2786,6 +2787,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 3ceac021a4ee34f8795b93fed21c2fc0, type: 3}
   - {fileID: 8300000, guid: e753dc3dea92f4b1c81255878103653f, type: 3}
   GameOverVocalClip: {fileID: 8300000, guid: dde698f7e18ad439d93644afcb0de99b, type: 3}
+  MusicIconToggle: {fileID: 8834802984877306410}
+  FxIconToggle: {fileID: 8623692345786606518}
 --- !u!1 &2019877148
 GameObject:
   m_ObjectHideFlags: 0
@@ -3127,6 +3130,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2335798155148573102}
   - component: {fileID: 4828258292486901205}
+  - component: {fileID: 4828258292486901206}
   m_Layer: 5
   m_Name: Rotate
   m_TagString: Untagged
@@ -3630,6 +3634,7 @@ GameObject:
   - component: {fileID: 4457993549756645066}
   - component: {fileID: 8623692345786606517}
   - component: {fileID: 1967527505156463721}
+  - component: {fileID: 8623692345786606518}
   m_Layer: 5
   m_Name: FXIcon
   m_TagString: Untagged
@@ -3950,6 +3955,62 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &4828258292486901206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1145759308154670094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 5082397587312343000}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 83154223}
+        m_TargetAssemblyTypeName: GameController, Assembly-CSharp
+        m_MethodName: ToggleRotDirection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &4982592758694403633
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4663,6 +4724,7 @@ GameObject:
   - component: {fileID: 8834802984877306409}
   - component: {fileID: 3525189849156661078}
   - component: {fileID: 6631674513324986506}
+  - component: {fileID: 8834802984877306410}
   m_Layer: 5
   m_Name: MusicIcon
   m_TagString: Untagged
@@ -4747,6 +4809,7 @@ GameObject:
   - component: {fileID: 6925335532173956475}
   - component: {fileID: 3056747901611476996}
   - component: {fileID: 5082397587312343000}
+  - component: {fileID: 8495701060290459124}
   m_Layer: 5
   m_Name: RotateIcon
   m_TagString: Untagged
@@ -4754,6 +4817,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8495701060290459124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8495701060290459123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a1e240b46d475246b80cc3e478f4bd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IconTrue: {fileID: 21300000, guid: 1b52a1708924ee14e97faad51340feb3, type: 3}
+  IconFalse: {fileID: 21300000, guid: 49e39637ca083c641b46b8c397a645fc, type: 3}
+  DefaultIconState: 1
 --- !u!224 &8553334992287828641
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4806,6 +4884,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2891462009556115010}
   m_CullTransparentMesh: 1
+--- !u!114 &8623692345786606518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2891462009556115010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a1e240b46d475246b80cc3e478f4bd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IconTrue: {fileID: 21300000, guid: a5f07358d4c4ae64282825cdb7bc73fd, type: 3}
+  IconFalse: {fileID: 21300000, guid: 95afff8e00ab8ad408edd14b6ed2c825, type: 3}
+  DefaultIconState: 1
 --- !u!222 &8636297120698926104
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4852,6 +4945,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8834802984877306410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8027374290212426401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a1e240b46d475246b80cc3e478f4bd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IconTrue: {fileID: 21300000, guid: a13e9912819f74e4fa64c58dbdbbc305, type: 3}
+  IconFalse: {fileID: 21300000, guid: 1a83bf88cd5d2f344ac3cc3b1d800c99, type: 3}
+  DefaultIconState: 1
 --- !u!114 &9023911664249267165
 MonoBehaviour:
   m_ObjectHideFlags: 0

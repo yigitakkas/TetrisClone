@@ -33,6 +33,10 @@ public class SoundManager : MonoBehaviour
 
     public AudioClip GameOverVocalClip;
 
+    public IconToggle MusicIconToggle;
+
+    public IconToggle FxIconToggle;
+
     private void Awake()
     {
         Instance = this;
@@ -80,10 +84,19 @@ public class SoundManager : MonoBehaviour
     {
         MusicEnabled = !MusicEnabled;
         UpdateMusic();
+
+        if(MusicIconToggle)
+        {
+            MusicIconToggle.ToggleIcon(MusicEnabled);
+        }
     }
 
     public void ToggleFX()
     {
         FxEnabled = !FxEnabled;
+        if(FxIconToggle)
+        {
+            FxIconToggle.ToggleIcon(FxEnabled);
+        }
     }
 }
