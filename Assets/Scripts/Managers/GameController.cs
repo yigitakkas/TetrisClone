@@ -38,6 +38,12 @@ public class GameController : MonoBehaviour
     public IconToggle RotIconToggle;
 
     private bool _clockwise = true;
+
+    public bool IsPaused = false;
+
+    public GameObject PausePanel;
+
+
     private void Awake()
     {
     }
@@ -87,67 +93,76 @@ public class GameController : MonoBehaviour
 
     private void PlayerInput()
     {
-        if (_inputController.GetPressingRight() && Time.time > _timeToNextKeyLeftRight || Input.GetKeyDown(KeyCode.RightArrow))
+        if(!IsPaused)
         {
-            _activeShape.MoveRight();
-            _timeToNextKeyLeftRight = Time.time + KeyRepeatRateLeftRight;
-            if (!_gameBoard.IsValidPosition(_activeShape))
-            {
-                _activeShape.MoveLeft();
-                PlaySound(_soundManager.ErrorSound,.5f);
-            } else
-            {
-                PlaySound(_soundManager.MoveSound,.5f);
-            }
-        }
-        else if (_inputController.GetPressingLeft() && Time.time > _timeToNextKeyLeftRight || Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            _activeShape.MoveLeft();
-            _timeToNextKeyLeftRight = Time.time + KeyRepeatRateLeftRight;
-            if (!_gameBoard.IsValidPosition(_activeShape))
+            if (_inputController.GetPressingRight() && Time.time > _timeToNextKeyLeftRight || Input.GetKeyDown(KeyCode.RightArrow))
             {
                 _activeShape.MoveRight();
-                PlaySound(_soundManager.ErrorSound, .5f);
-            }
-            else
-            {
-                PlaySound(_soundManager.MoveSound, .5f);
-            }
-        }
-        else if (_inputController.GetRotating() && Time.time > _timeToNextKeyRotate)
-        {
-            _activeShape.RotateClockwise(_clockwise);
-            _timeToNextKeyRotate = Time.time + KeyRepeatRateRotate;
-            if (!_gameBoard.IsValidPosition(_activeShape))
-            {
-                _activeShape.RotateClockwise(!_clockwise);
-                PlaySound(_soundManager.ErrorSound, .5f);
-            }
-            else
-            {
-                PlaySound(_soundManager.MoveSound, .5f);
-            }
-        }
-        else if(_inputController.GetPressingDown() && Time.time > _timeToNextKeyDown || (Time.time > _timeToDrop))
-        {
-            _timeToDrop = Time.time + _dropInterval;
-            _timeToNextKeyDown = Time.time + KeyRepeatRateDown;
-            _activeShape.MoveDown();
-
-            if (!_gameBoard.IsValidPosition(_activeShape))
-            {
-                if (_gameBoard.IsOverLimit(_activeShape))
+                _timeToNextKeyLeftRight = Time.time + KeyRepeatRateLeftRight;
+                if (!_gameBoard.IsValidPosition(_activeShape))
                 {
-                    GameOver();
-                } else
+                    _activeShape.MoveLeft();
+                    PlaySound(_soundManager.ErrorSound, .5f);
+                }
+                else
                 {
-                    LandShape();
+                    PlaySound(_soundManager.MoveSound, .5f);
                 }
             }
+            else if (_inputController.GetPressingLeft() && Time.time > _timeToNextKeyLeftRight || Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                _activeShape.MoveLeft();
+                _timeToNextKeyLeftRight = Time.time + KeyRepeatRateLeftRight;
+                if (!_gameBoard.IsValidPosition(_activeShape))
+                {
+                    _activeShape.MoveRight();
+                    PlaySound(_soundManager.ErrorSound, .5f);
+                }
+                else
+                {
+                    PlaySound(_soundManager.MoveSound, .5f);
+                }
+            }
+            else if (_inputController.GetRotating() && Time.time > _timeToNextKeyRotate)
+            {
+                _activeShape.RotateClockwise(_clockwise);
+                _timeToNextKeyRotate = Time.time + KeyRepeatRateRotate;
+                if (!_gameBoard.IsValidPosition(_activeShape))
+                {
+                    _activeShape.RotateClockwise(!_clockwise);
+                    PlaySound(_soundManager.ErrorSound, .5f);
+                }
+                else
+                {
+                    PlaySound(_soundManager.MoveSound, .5f);
+                }
+            }
+            else if (_inputController.GetPressingDown() && Time.time > _timeToNextKeyDown || (Time.time > _timeToDrop))
+            {
+                _timeToDrop = Time.time + _dropInterval;
+                _timeToNextKeyDown = Time.time + KeyRepeatRateDown;
+                _activeShape.MoveDown();
+
+                if (!_gameBoard.IsValidPosition(_activeShape))
+                {
+                    if (_gameBoard.IsOverLimit(_activeShape))
+                    {
+                        GameOver();
+                    }
+                    else
+                    {
+                        LandShape();
+                    }
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.Q))
+            {
+                ToggleRotDirection();
+            }
         }
-        else if(Input.GetKeyDown(KeyCode.Q))
+        if(Input.GetKeyDown(KeyCode.P))
         {
-            ToggleRotDirection();
+            TogglePause();
         }
     }
 
@@ -199,7 +214,7 @@ public class GameController : MonoBehaviour
 
     public void Restart()
     {
-        Debug.Log("Restarted");
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -218,5 +233,27 @@ public class GameController : MonoBehaviour
         {
             RotIconToggle.ToggleIcon(_clockwise);
         }
+    }
+
+    public void TogglePause()
+    {
+        if(_gameOver)
+        {
+            return;
+        }
+        IsPaused = !IsPaused;
+
+        if (PausePanel)
+        {
+            PausePanel.SetActive(IsPaused);
+
+            if (_soundManager != null)
+            {
+                _soundManager.MusicSource.volume = IsPaused ? _soundManager.MusicVolume * 0.25f : _soundManager.MusicVolume;
+            }
+
+            Time.timeScale = IsPaused ? 0 : 1;
+        }
+
     }
 }
