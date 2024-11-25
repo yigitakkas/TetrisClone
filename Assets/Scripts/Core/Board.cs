@@ -9,6 +9,7 @@ public class Board : MonoBehaviour
     public int Height = 30;
     public int Width = 10;
     public int Header = 8;
+    private int _completedRows = 0;
 
     private Transform[,] _grid;
 
@@ -125,10 +126,12 @@ public class Board : MonoBehaviour
 
     public void ClearAllRows()
     {
+        _completedRows = 0;
         for(int y=0; y < Height; ++y)
         {
             if(IsComplete(y))
             {
+                _completedRows++;
                 ClearRow(y);
                 ShiftRowsDown(y + 1);
                 y--;
@@ -146,5 +149,10 @@ public class Board : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public int ReturnCompletedRows()
+    {
+        return _completedRows;
     }
 }

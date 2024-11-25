@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
+    public static SoundManager Instance;
     public bool MusicEnabled = true;
     public bool FxEnabled = true;
 
@@ -20,11 +21,22 @@ public class SoundManager : MonoBehaviour
 
     public AudioClip GameOverSound;
 
+    public AudioClip ErrorSound;
+
     private AudioClip _backgroundMusic;
 
     public AudioSource MusicSource;
 
     public AudioClip[] MusicClips;
+
+    public AudioClip[] VocalClips;
+
+    public AudioClip GameOverVocalClip;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -68,5 +80,10 @@ public class SoundManager : MonoBehaviour
     {
         MusicEnabled = !MusicEnabled;
         UpdateMusic();
+    }
+
+    public void ToggleFX()
+    {
+        FxEnabled = !FxEnabled;
     }
 }

@@ -361,9 +361,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dropInterval: 0.5
-  KeyRepeatRateLeftRight: 0.2
-  KeyRepeatRateDown: 0.05
-  KeyRepeatRateRotate: 0.2
+  KeyRepeatRateLeftRight: 0.12
+  KeyRepeatRateDown: 0.03
+  KeyRepeatRateRotate: 0.25
   GameOverPanel: {fileID: 1484436630}
 --- !u!4 &83154224
 Transform:
@@ -1190,6 +1190,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 544167582}
   m_CullTransparentMesh: 1
+--- !u!1 &597185944
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 597185946}
+  - component: {fileID: 597185945}
+  m_Layer: 0
+  m_Name: SpawnerForTesting
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &597185945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597185944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 756153807e0117f4f9b0f1b335ef93f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllShapes:
+  - {fileID: 5428615703588583158, guid: 993e102e5df6fce449dbe9fa0bad8aaf, type: 3}
+--- !u!4 &597185946
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597185944}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4, y: 25, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &613897273
 GameObject:
   m_ObjectHideFlags: 0
@@ -2724,16 +2770,22 @@ MonoBehaviour:
   MusicEnabled: 1
   FxEnabled: 1
   MusicVolume: 0.138
-  FxVolume: 1
-  ClearRowSound: {fileID: 0}
-  MoveSound: {fileID: 0}
-  DropSound: {fileID: 0}
-  GameOverSound: {fileID: 0}
+  FxVolume: 0.315
+  ClearRowSound: {fileID: 8300000, guid: 5e573cc7e2cd44522a9dbd65bd61eb95, type: 3}
+  MoveSound: {fileID: 8300000, guid: 232745a37421848f0b6ba281e2775fd1, type: 3}
+  DropSound: {fileID: 8300000, guid: 2912ce0f9e2544ed7947ea6ba42a1347, type: 3}
+  GameOverSound: {fileID: 8300000, guid: fed0a0232ce1b40a882a18aa3a249a22, type: 3}
+  ErrorSound: {fileID: 8300000, guid: 837dfc9d854464e42ac6063e526eacc1, type: 3}
   MusicSource: {fileID: 1241618471}
   MusicClips:
   - {fileID: 8300000, guid: 8e6afcfcba29249349c399c7826ebf58, type: 3}
   - {fileID: 8300000, guid: 771c70196026e41e3abd6f9f46b17225, type: 3}
   - {fileID: 8300000, guid: e227747a923da450c93c73bcd1a0965c, type: 3}
+  VocalClips:
+  - {fileID: 8300000, guid: 8b9eee15a25ac4457bc8de1db8deed46, type: 3}
+  - {fileID: 8300000, guid: 3ceac021a4ee34f8795b93fed21c2fc0, type: 3}
+  - {fileID: 8300000, guid: e753dc3dea92f4b1c81255878103653f, type: 3}
+  GameOverVocalClip: {fileID: 8300000, guid: dde698f7e18ad439d93644afcb0de99b, type: 3}
 --- !u!1 &2019877148
 GameObject:
   m_ObjectHideFlags: 0
@@ -4228,6 +4280,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9055664013752406559}
   - component: {fileID: 2217786623714698852}
+  - component: {fileID: 9055664013752406560}
   m_Layer: 5
   m_Name: FX
   m_TagString: Untagged
@@ -4872,6 +4925,62 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &9055664013752406560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5917954759705012159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1967527505156463721}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1889251449}
+        m_TargetAssemblyTypeName: SoundManager, Assembly-CSharp
+        m_MethodName: ToggleFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &9135769500891042086
 GameObject:
   m_ObjectHideFlags: 0
