@@ -160,7 +160,7 @@ public class GameController : MonoBehaviour
                 ToggleRotDirection();
             }
         }
-        if(Input.GetKeyDown(KeyCode.P))
+        if(Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape))
         {
             TogglePause();
         }
