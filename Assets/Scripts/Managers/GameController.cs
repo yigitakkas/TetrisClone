@@ -7,28 +7,28 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    Board _gameBoard;
-    Spawner _spawner;
-    Shape _activeShape;
-    InputController _inputController;
+    private Board _gameBoard;
+    private Spawner _spawner;
+    private Shape _activeShape;
+    private InputController _inputController;
 
     public float _dropInterval = .3f;
-    float _timeToDrop;
+    private float _timeToDrop;
     //float _timeToNextKey;
     //[Range(0.02f,1f)]
     //public float KeyRepeatRate = .25f;
 
     [Range(0.02f, 1f)]
     public float KeyRepeatRateLeftRight = .2f;
-    float _timeToNextKeyLeftRight;
+    private float _timeToNextKeyLeftRight;
 
     [Range(0.02f, 1f)]
     public float KeyRepeatRateDown = .15f;
-    float _timeToNextKeyDown;
+    private float _timeToNextKeyDown;
 
     [Range(0.01f, 1f)]
     public float KeyRepeatRateRotate = .2f;
-    float _timeToNextKeyRotate;
+    private float _timeToNextKeyRotate;
 
     private bool _gameOver = false;
 
@@ -109,10 +109,8 @@ public class GameController : MonoBehaviour
 
             if (!_gameBoard.IsValidPosition(_activeShape))
             {
-                Debug.Log("Shape is not in valid position");
                 if (_gameBoard.IsOverLimit(_activeShape))
                 {
-                    Debug.Log("Game Over Detected");
                     GameOver();
                 } else
                 {

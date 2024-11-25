@@ -20,16 +20,53 @@ public class SoundManager : MonoBehaviour
 
     public AudioClip GameOverSound;
 
-    public AudioClip BackgroundMusic;
-    // Start is called before the first frame update
+    private AudioClip _backgroundMusic;
+
+    public AudioSource MusicSource;
+
+    public AudioClip[] MusicClips;
+
     void Start()
     {
-        
+        _backgroundMusic = GetRandomClip(MusicClips);
+        PlayBackgroundMusic(_backgroundMusic);
     }
 
-    // Update is called once per frame
-    void Update()
+    public AudioClip GetRandomClip(AudioClip[] clips)
     {
-        
+        AudioClip randomClip = clips[Random.Range(0, clips.Length)];
+        return randomClip;
+    }
+
+    public void PlayBackgroundMusic(AudioClip musicClip)
+    {
+        if (!MusicEnabled || !musicClip || !MusicSource)
+            return;
+
+        MusicSource.Stop();
+        MusicSource.clip = musicClip;
+        MusicSource.volume = MusicVolume;
+        MusicSource.loop = true;
+        MusicSource.Play();
+    }
+
+    void UpdateMusic()
+    {
+        if(MusicSource.isPlaying != MusicEnabled)
+        {
+            if(MusicEnabled)
+            {
+                PlayBackgroundMusic(_backgroundMusic);
+            } else
+            {
+                MusicSource.Stop();
+            }
+        }
+    }
+
+    public void ToggleMusic()
+    {
+        MusicEnabled = !MusicEnabled;
+        UpdateMusic();
     }
 }
