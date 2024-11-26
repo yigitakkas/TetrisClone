@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
     private InputController _inputController;
     private SoundManager _soundManager;
     private ScoreManager _scoreManager;
+    private Ghost _ghost;
 
     //daha sonra private olacak
     public float _dropInterval = .3f;
@@ -54,6 +55,7 @@ public class GameController : MonoBehaviour
         _gameBoard = Board.Instance;
         _soundManager = SoundManager.Instance;
         _scoreManager = ScoreManager.Instance;
+        _ghost = Ghost.Instance;
 
         _timeToNextKeyDown = Time.time + KeyRepeatRateDown;
         _timeToNextKeyRotate = Time.time + KeyRepeatRateRotate;
@@ -96,6 +98,14 @@ public class GameController : MonoBehaviour
         if (!_gameBoard || !_spawner || !_activeShape || _gameOver || !_soundManager || !_scoreManager)
             return;
         PlayerInput();
+    }
+
+    private void LateUpdate()
+    {
+        if(_ghost)
+        {
+            _ghost.DrawGhost(_activeShape);
+        }
     }
 
     private void PlayerInput()
@@ -182,6 +192,12 @@ public class GameController : MonoBehaviour
         _inputController.FalsePressingDown();
         _activeShape.MoveUp();
         _gameBoard.StoreShapeInGrid(_activeShape);
+
+        if(_ghost)
+        {
+            _ghost.Reset();
+        }
+
         _activeShape = _spawner.SpawnShape();
 
         _gameBoard.ClearAllRows();
