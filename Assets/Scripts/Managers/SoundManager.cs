@@ -33,6 +33,8 @@ public class SoundManager : MonoBehaviour
 
     public AudioClip GameOverVocalClip;
 
+    public AudioClip LevelUpVocalClip;
+
     public IconToggle MusicIconToggle;
 
     public IconToggle FxIconToggle;

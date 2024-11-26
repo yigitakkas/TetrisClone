@@ -12,12 +12,12 @@ public class GameController : MonoBehaviour
     private Shape _activeShape;
     private InputController _inputController;
     private SoundManager _soundManager;
+    private ScoreManager _scoreManager;
 
+    //daha sonra private olacak
     public float _dropInterval = .3f;
+    private float _dropIntervalModded;
     private float _timeToDrop;
-    //float _timeToNextKey;
-    //[Range(0.02f,1f)]
-    //public float KeyRepeatRate = .25f;
 
     [Range(0.02f, 1f)]
     public float KeyRepeatRateLeftRight = .2f;
@@ -53,10 +53,13 @@ public class GameController : MonoBehaviour
         _spawner = Spawner.Instance;
         _gameBoard = Board.Instance;
         _soundManager = SoundManager.Instance;
+        _scoreManager = ScoreManager.Instance;
 
         _timeToNextKeyDown = Time.time + KeyRepeatRateDown;
         _timeToNextKeyRotate = Time.time + KeyRepeatRateRotate;
         _timeToNextKeyLeftRight = Time.time + KeyRepeatRateLeftRight;
+
+        _dropIntervalModded = _dropInterval;
 
         if (!_gameBoard)
         {
@@ -65,6 +68,10 @@ public class GameController : MonoBehaviour
         if (!_soundManager)
         {
             Debug.Log("Sound manager not defined");
+        }
+        if (!_scoreManager)
+        {
+            Debug.Log("Score manager not defined");
         }
         if (!_spawner)
         {
@@ -86,7 +93,7 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        if (!_gameBoard || !_spawner || !_activeShape || _gameOver || !_soundManager)
+        if (!_gameBoard || !_spawner || !_activeShape || _gameOver || !_soundManager || !_scoreManager)
             return;
         PlayerInput();
     }
@@ -95,7 +102,7 @@ public class GameController : MonoBehaviour
     {
         if(!IsPaused)
         {
-            if (_inputController.GetPressingRight() && Time.time > _timeToNextKeyLeftRight || Input.GetKeyDown(KeyCode.RightArrow))
+            if ((_inputController.GetPressingRight() && Time.time > _timeToNextKeyLeftRight) || Input.GetKeyDown(KeyCode.RightArrow))
             {
                 _activeShape.MoveRight();
                 _timeToNextKeyLeftRight = Time.time + KeyRepeatRateLeftRight;
@@ -109,7 +116,7 @@ public class GameController : MonoBehaviour
                     PlaySound(_soundManager.MoveSound, .5f);
                 }
             }
-            else if (_inputController.GetPressingLeft() && Time.time > _timeToNextKeyLeftRight || Input.GetKeyDown(KeyCode.LeftArrow))
+            else if ((_inputController.GetPressingLeft() && Time.time > _timeToNextKeyLeftRight) || Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 _activeShape.MoveLeft();
                 _timeToNextKeyLeftRight = Time.time + KeyRepeatRateLeftRight;
@@ -137,9 +144,9 @@ public class GameController : MonoBehaviour
                     PlaySound(_soundManager.MoveSound, .5f);
                 }
             }
-            else if (_inputController.GetPressingDown() && Time.time > _timeToNextKeyDown || (Time.time > _timeToDrop))
+            else if ((_inputController.GetPressingDown() && Time.time > _timeToNextKeyDown) || (Time.time > _timeToDrop))
             {
-                _timeToDrop = Time.time + _dropInterval;
+                _timeToDrop = Time.time + _dropIntervalModded;
                 _timeToNextKeyDown = Time.time + KeyRepeatRateDown;
                 _activeShape.MoveDown();
 
@@ -180,19 +187,30 @@ public class GameController : MonoBehaviour
         _gameBoard.ClearAllRows();
 
         PlaySound(_soundManager.DropSound, 0.65f);
+
         if(_gameBoard.ReturnCompletedRows()>0)
         {
-            if(_gameBoard.ReturnCompletedRows() > 1)
+            _scoreManager.ScoreLines(_gameBoard.ReturnCompletedRows());
+            if(_scoreManager.ReturnDidLevelUp())
             {
-                if(_gameBoard.ReturnCompletedRows() == 2)
+                PlaySound(_soundManager.LevelUpVocalClip);
+                _dropIntervalModded = Mathf.Clamp(_dropInterval - ((float)(_scoreManager.ReturnLevel() - 1) * 0.05f), 0.1f,0.75f);
+            } else
+            {
+                if (_gameBoard.ReturnCompletedRows() > 1)
                 {
-                    PlaySound(_soundManager.VocalClips[0]);
-                } else if (_gameBoard.ReturnCompletedRows() == 3)
-                {
-                    PlaySound(_soundManager.VocalClips[1]);
-                } else
-                {
-                    PlaySound(_soundManager.VocalClips[2]);
+                    if (_gameBoard.ReturnCompletedRows() == 2)
+                    {
+                        PlaySound(_soundManager.VocalClips[0]);
+                    }
+                    else if (_gameBoard.ReturnCompletedRows() == 3)
+                    {
+                        PlaySound(_soundManager.VocalClips[1]);
+                    }
+                    else
+                    {
+                        PlaySound(_soundManager.VocalClips[2]);
+                    }
                 }
             }
             PlaySound(_soundManager.ClearRowSound);
