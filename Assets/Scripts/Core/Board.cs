@@ -10,8 +10,8 @@ public class Board : MonoBehaviour
     public int Width = 10;
     public int Header = 8;
     private int _completedRows = 0;
-
     private Transform[,] _grid;
+    public ParticlePlayer[] RowGlowFX = new ParticlePlayer[4];
 
     private void Awake()
     {
@@ -124,16 +124,25 @@ public class Board : MonoBehaviour
         }
     }
 
-    public void ClearAllRows()
+    public IEnumerator ClearAllRows()
     {
         _completedRows = 0;
-        for(int y=0; y < Height; ++y)
+        for (int y = 0; y < Height; ++y)
+        {
+            if (IsComplete(y))
+            {
+                ClearRowFX(_completedRows, y);
+                _completedRows++;
+            }
+        }
+        yield return new WaitForSeconds(0.5f);
+        for (int y=0; y < Height; ++y)
         {
             if(IsComplete(y))
             {
-                _completedRows++;
                 ClearRow(y);
                 ShiftRowsDown(y + 1);
+                yield return new WaitForSeconds(0.3f);
                 y--;
             }
         }
@@ -154,5 +163,14 @@ public class Board : MonoBehaviour
     public int ReturnCompletedRows()
     {
         return _completedRows;
+    }
+
+    private void ClearRowFX(int index, int y)
+    {
+        if (RowGlowFX[index])
+        {
+            RowGlowFX[index].transform.position = new Vector3(0, y, -2f);
+            RowGlowFX[index].Play();
+        }
     }
 }
