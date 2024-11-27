@@ -185,51 +185,57 @@ public class GameController : MonoBehaviour
 
     private void LandShape()
     {
-        _timeToNextKeyDown = Time.time;
-        _timeToNextKeyRotate = Time.time;
-        _timeToNextKeyLeftRight = Time.time;
-
-        _inputController.FalsePressingDown();
-        _activeShape.MoveUp();
-        _gameBoard.StoreShapeInGrid(_activeShape);
-
-        if(_ghost)
+        if(_activeShape)
         {
-            _ghost.Reset();
-        }
+            _timeToNextKeyDown = Time.time;
+            _timeToNextKeyRotate = Time.time;
+            _timeToNextKeyLeftRight = Time.time;
 
-        _activeShape = _spawner.SpawnShape();
+            _inputController.FalsePressingDown();
+            _activeShape.MoveUp();
+            _gameBoard.StoreShapeInGrid(_activeShape);
 
-        StartCoroutine(_gameBoard.ClearAllRows());
+            _activeShape.LandShapeFX();
 
-        PlaySound(_soundManager.DropSound, 0.65f);
-
-        if(_gameBoard.ReturnCompletedRows()>0)
-        {
-            _scoreManager.ScoreLines(_gameBoard.ReturnCompletedRows());
-            if(_scoreManager.ReturnDidLevelUp())
+            if (_ghost)
             {
-                PlaySound(_soundManager.LevelUpVocalClip);
-                _dropIntervalModded = Mathf.Clamp(_dropInterval - ((float)(_scoreManager.ReturnLevel() - 1) * 0.05f), 0.1f,0.75f);
-            } else
+                _ghost.Reset();
+            }
+
+            _activeShape = _spawner.SpawnShape();
+
+            StartCoroutine(_gameBoard.ClearAllRows());
+
+            PlaySound(_soundManager.DropSound, 0.65f);
+
+            if (_gameBoard.ReturnCompletedRows() > 0)
             {
-                if (_gameBoard.ReturnCompletedRows() > 1)
+                _scoreManager.ScoreLines(_gameBoard.ReturnCompletedRows());
+                if (_scoreManager.ReturnDidLevelUp())
                 {
-                    if (_gameBoard.ReturnCompletedRows() == 2)
+                    PlaySound(_soundManager.LevelUpVocalClip);
+                    _dropIntervalModded = Mathf.Clamp(_dropInterval - ((float)(_scoreManager.ReturnLevel() - 1) * 0.05f), 0.1f, 0.75f);
+                }
+                else
+                {
+                    if (_gameBoard.ReturnCompletedRows() > 1)
                     {
-                        PlaySound(_soundManager.VocalClips[0]);
-                    }
-                    else if (_gameBoard.ReturnCompletedRows() == 3)
-                    {
-                        PlaySound(_soundManager.VocalClips[1]);
-                    }
-                    else
-                    {
-                        PlaySound(_soundManager.VocalClips[2]);
+                        if (_gameBoard.ReturnCompletedRows() == 2)
+                        {
+                            PlaySound(_soundManager.VocalClips[0]);
+                        }
+                        else if (_gameBoard.ReturnCompletedRows() == 3)
+                        {
+                            PlaySound(_soundManager.VocalClips[1]);
+                        }
+                        else
+                        {
+                            PlaySound(_soundManager.VocalClips[2]);
+                        }
                     }
                 }
+                PlaySound(_soundManager.ClearRowSound);
             }
-            PlaySound(_soundManager.ClearRowSound);
         }
     }
     private void GameOver()
