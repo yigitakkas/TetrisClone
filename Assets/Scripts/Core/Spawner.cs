@@ -9,6 +9,7 @@ public class Spawner : MonoBehaviour
     public Transform[] QueuedXForms = new Transform[3];
     private Shape[] _queuedShapes = new Shape[3];
     private float _queueScale = 0.5f;
+    public ParticlePlayer SpawnFx;
 
     private void Awake()
     {
@@ -37,7 +38,11 @@ public class Spawner : MonoBehaviour
     {
         Shape shape = GetQueuedShape();
         shape.transform.position = transform.position;
-        shape.transform.localScale = Vector3.one;
+        StartCoroutine(GrowShape(shape,transform.position, .25f));
+        if(SpawnFx)
+        {
+            SpawnFx.Play();
+        }
         if (shape)
         {
             return shape;
@@ -97,5 +102,21 @@ public class Spawner : MonoBehaviour
                 _queuedShapes[i - 1].transform.position = QueuedXForms[i - 1].position;
             }
         }
+    }
+
+    IEnumerator GrowShape(Shape shape, Vector3 position, float growTime = 0.5f)
+    {
+        float size = 0f;
+        growTime = Mathf.Clamp(growTime, 0.1f, 2f);
+        float sizeDelta =Time.deltaTime / growTime;
+
+        while (size < 1f)
+        {
+            shape.transform.localScale = new Vector3(size, size, size);
+            size += sizeDelta;
+            shape.transform.position = position;
+            yield return null;
+        }
+        shape.transform.localScale = Vector3.one;
     }
 }

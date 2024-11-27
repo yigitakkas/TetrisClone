@@ -22,6 +22,8 @@ public class ScoreManager : MonoBehaviour
 
     private bool _didLevelUp = false;
 
+    public ParticlePlayer LevelUpFx;
+
     private void Awake()
     {
         Instance = this;
@@ -97,6 +99,10 @@ public class ScoreManager : MonoBehaviour
         _level++;
         _lines = LinesPerLevel * _level;
         _didLevelUp = true;
+        if(LevelUpFx)
+        {
+            LevelUpFx.Play();
+        }
     }
 
     public bool ReturnDidLevelUp()

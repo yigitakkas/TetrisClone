@@ -44,6 +44,8 @@ public class GameController : MonoBehaviour
 
     public GameObject PausePanel;
 
+    public ParticlePlayer GameOverFx;
+
 
     private void Awake()
     {
@@ -243,13 +245,23 @@ public class GameController : MonoBehaviour
         _activeShape.MoveUp();
         _gameOver = true;
         Debug.LogWarning(_activeShape.name + " is over limit");
+        StartCoroutine(GameOverRoutine());
+        PlaySound(_soundManager.GameOverSound, 3f);
+        PlaySound(_soundManager.GameOverVocalClip, 3f);
+    }
 
+
+    IEnumerator GameOverRoutine()
+    {
+        if (GameOverFx)
+        {
+            GameOverFx.Play();
+        }
+        yield return new WaitForSeconds(0.5f);
         if (GameOverPanel)
         {
             GameOverPanel.SetActive(true);
         }
-        PlaySound(_soundManager.GameOverSound, 3f);
-        PlaySound(_soundManager.GameOverVocalClip, 3f);
     }
 
     public void Restart()
