@@ -112,76 +112,112 @@ public class GameController : MonoBehaviour
 
     private void PlayerInput()
     {
-        if(!IsPaused)
+        if (!IsPaused)
         {
             if ((_inputController.GetPressingRight() && Time.time > _timeToNextKeyLeftRight) || Input.GetKeyDown(KeyCode.RightArrow))
             {
-                _activeShape.MoveRight();
-                _timeToNextKeyLeftRight = Time.time + KeyRepeatRateLeftRight;
-                if (!_gameBoard.IsValidPosition(_activeShape))
-                {
-                    _activeShape.MoveLeft();
-                    PlaySound(_soundManager.ErrorSound, .5f);
-                }
-                else
-                {
-                    PlaySound(_soundManager.MoveSound, .5f);
-                }
+                MoveRight();
             }
             else if ((_inputController.GetPressingLeft() && Time.time > _timeToNextKeyLeftRight) || Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                _activeShape.MoveLeft();
-                _timeToNextKeyLeftRight = Time.time + KeyRepeatRateLeftRight;
-                if (!_gameBoard.IsValidPosition(_activeShape))
-                {
-                    _activeShape.MoveRight();
-                    PlaySound(_soundManager.ErrorSound, .5f);
-                }
-                else
-                {
-                    PlaySound(_soundManager.MoveSound, .5f);
-                }
+                MoveLeft();
             }
             else if (_inputController.GetRotating() && Time.time > _timeToNextKeyRotate)
             {
-                _activeShape.RotateClockwise(_clockwise);
-                _timeToNextKeyRotate = Time.time + KeyRepeatRateRotate;
-                if (!_gameBoard.IsValidPosition(_activeShape))
-                {
-                    _activeShape.RotateClockwise(!_clockwise);
-                    PlaySound(_soundManager.ErrorSound, .5f);
-                }
-                else
-                {
-                    PlaySound(_soundManager.MoveSound, .5f);
-                }
+                HandleRotationInput();
             }
             else if ((_inputController.GetPressingDown() && Time.time > _timeToNextKeyDown) || (Time.time > _timeToDrop))
             {
-                _timeToDrop = Time.time + _dropIntervalModded;
-                _timeToNextKeyDown = Time.time + KeyRepeatRateDown;
-                _activeShape.MoveDown();
-
-                if (!_gameBoard.IsValidPosition(_activeShape))
-                {
-                    if (_gameBoard.IsOverLimit(_activeShape))
-                    {
-                        GameOver();
-                    }
-                    else
-                    {
-                        LandShape();
-                    }
-                }
+                HandleSoftDropInput();
             }
             else if (Input.GetKeyDown(KeyCode.Q))
             {
                 ToggleRotDirection();
             }
         }
-        if(Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape))
+
+        if (Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape))
         {
             TogglePause();
+        }
+    }
+
+    private void HandleMovementInput()
+    {
+        if ((_inputController.GetPressingRight() && Time.time > _timeToNextKeyLeftRight) || Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            MoveRight();
+        }
+        else if ((_inputController.GetPressingLeft() && Time.time > _timeToNextKeyLeftRight) || Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            MoveLeft();
+        }
+    }
+
+    private void MoveRight()
+    {
+        _activeShape.MoveRight();
+        _timeToNextKeyLeftRight = Time.time + KeyRepeatRateLeftRight;
+
+        if (!_gameBoard.IsValidPosition(_activeShape))
+        {
+            _activeShape.MoveLeft();
+            PlaySound(_soundManager.ErrorSound, 0.5f);
+        }
+        else
+        {
+            PlaySound(_soundManager.MoveSound, 0.5f);
+        }
+    }
+
+    private void MoveLeft()
+    {
+        _activeShape.MoveLeft();
+        _timeToNextKeyLeftRight = Time.time + KeyRepeatRateLeftRight;
+
+        if (!_gameBoard.IsValidPosition(_activeShape))
+        {
+            _activeShape.MoveRight();
+            PlaySound(_soundManager.ErrorSound, 0.5f);
+        }
+        else
+        {
+            PlaySound(_soundManager.MoveSound, 0.5f);
+        }
+    }
+
+    private void HandleRotationInput()
+    {
+        _activeShape.RotateClockwise(_clockwise);
+        _timeToNextKeyRotate = Time.time + KeyRepeatRateRotate;
+
+        if (!_gameBoard.IsValidPosition(_activeShape))
+        {
+            _activeShape.RotateClockwise(!_clockwise);
+            PlaySound(_soundManager.ErrorSound, 0.5f);
+        }
+        else
+        {
+            PlaySound(_soundManager.MoveSound, 0.5f);
+        }
+    }
+
+    private void HandleSoftDropInput()
+    {
+        _timeToDrop = Time.time + _dropIntervalModded;
+        _timeToNextKeyDown = Time.time + KeyRepeatRateDown;
+        _activeShape.MoveDown();
+
+        if (!_gameBoard.IsValidPosition(_activeShape))
+        {
+            if (_gameBoard.IsOverLimit(_activeShape))
+            {
+                GameOver();
+            }
+            else
+            {
+                LandShape();
+            }
         }
     }
 
