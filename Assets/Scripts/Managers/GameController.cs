@@ -225,57 +225,65 @@ public class GameController : MonoBehaviour
     {
         if(_activeShape)
         {
-            _timeToNextKeyDown = Time.time;
-            _timeToNextKeyRotate = Time.time;
-            _timeToNextKeyLeftRight = Time.time;
-
+            ResetInputTimers();
             _inputController.FalsePressingDown();
             _activeShape.MoveUp();
             _gameBoard.StoreShapeInGrid(_activeShape);
-
             _activeShape.LandShapeFX();
-
             if (_ghost)
             {
                 _ghost.Reset();
             }
-
             _activeShape = _spawner.SpawnShape();
-
             StartCoroutine(_gameBoard.ClearAllRows());
-
             PlaySound(_soundManager.DropSound, 0.65f);
 
-            if (_gameBoard.ReturnCompletedRows() > 0)
-            {
-                _scoreManager.ScoreLines(_gameBoard.ReturnCompletedRows());
-                if (_scoreManager.ReturnDidLevelUp())
-                {
-                    PlaySound(_soundManager.LevelUpVocalClip);
-                    _dropIntervalModded = Mathf.Clamp(_dropInterval - ((float)(_scoreManager.ReturnLevel() - 1) * 0.05f), 0.1f, 0.75f);
-                }
-                else
-                {
-                    if (_gameBoard.ReturnCompletedRows() > 1)
-                    {
-                        if (_gameBoard.ReturnCompletedRows() == 2)
-                        {
-                            PlaySound(_soundManager.VocalClips[0]);
-                        }
-                        else if (_gameBoard.ReturnCompletedRows() == 3)
-                        {
-                            PlaySound(_soundManager.VocalClips[1]);
-                        }
-                        else
-                        {
-                            PlaySound(_soundManager.VocalClips[2]);
-                        }
-                    }
-                }
-                PlaySound(_soundManager.ClearRowSound);
-            }
+            HandleCompletedRows();
         }
     }
+
+    private void HandleCompletedRows()
+    {
+        int completedRows = _gameBoard.ReturnCompletedRows();
+        if (completedRows > 0)
+        {
+            _scoreManager.ScoreLines(completedRows);
+            if (_scoreManager.ReturnDidLevelUp())
+            {
+                PlaySound(_soundManager.LevelUpVocalClip);
+                _dropIntervalModded = Mathf.Clamp(_dropInterval - ((float)(_scoreManager.ReturnLevel() - 1) * 0.05f), 0.1f, 0.75f);
+            }
+            else if (completedRows > 1)
+            {
+                PlayVocalClipForCompletedRows(completedRows);
+            }
+            PlaySound(_soundManager.ClearRowSound);
+        }
+    }
+
+    private void PlayVocalClipForCompletedRows(int completedRows)
+    {
+        if (completedRows == 2)
+        {
+            PlaySound(_soundManager.VocalClips[0]);
+        }
+        else if (completedRows == 3)
+        {
+            PlaySound(_soundManager.VocalClips[1]);
+        }
+        else
+        {
+            PlaySound(_soundManager.VocalClips[2]);
+        }
+    }
+
+    private void ResetInputTimers()
+    {
+        _timeToNextKeyDown = Time.time;
+        _timeToNextKeyRotate = Time.time;
+        _timeToNextKeyLeftRight = Time.time;
+    }
+
     private void GameOver()
     {
         _activeShape.MoveUp();
