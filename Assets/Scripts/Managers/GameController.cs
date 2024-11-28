@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
+    #region Fields
     private Board _gameBoard;
     private Spawner _spawner;
     private Shape _activeShape;
@@ -15,8 +16,7 @@ public class GameController : MonoBehaviour
     private ScoreManager _scoreManager;
     private Ghost _ghost;
 
-    //daha sonra private olacak
-    public float _dropInterval = .3f;
+    private float _dropInterval = .3f;
     private float _dropIntervalModded;
     private float _timeToDrop;
 
@@ -45,19 +45,12 @@ public class GameController : MonoBehaviour
     public GameObject PausePanel;
 
     public ParticlePlayer GameOverFx;
+    #endregion
 
-
-    private void Awake()
-    {
-    }
+    #region Unity Lifecycle Methods
     private void Start()
     {
-        _inputController = InputController.Instance;
-        _spawner = Spawner.Instance;
-        _gameBoard = Board.Instance;
-        _soundManager = SoundManager.Instance;
-        _scoreManager = ScoreManager.Instance;
-        _ghost = Ghost.Instance;
+        ValidateInstances();
 
         _timeToNextKeyDown = Time.time + KeyRepeatRateDown;
         _timeToNextKeyRotate = Time.time + KeyRepeatRateRotate;
@@ -65,31 +58,14 @@ public class GameController : MonoBehaviour
 
         _dropIntervalModded = _dropInterval;
 
-        if (!_gameBoard)
+        Vector3 _roundedPosition = Vector3Int.RoundToInt(_spawner.transform.position);
+        _spawner.transform.position = _roundedPosition;
+
+        if (!_activeShape)
         {
-            Debug.Log("Game Board not defined");
+            _activeShape = _spawner.SpawnShape();
         }
-        if (!_soundManager)
-        {
-            Debug.Log("Sound manager not defined");
-        }
-        if (!_scoreManager)
-        {
-            Debug.Log("Score manager not defined");
-        }
-        if (!_spawner)
-        {
-            Debug.Log("Spawner not defined");
-        } else
-        {
-            Vector3 _roundedPosition = Vector3Int.RoundToInt(_spawner.transform.position);
-            _spawner.transform.position = _roundedPosition;
-            if (!_activeShape)
-            {
-                _activeShape = _spawner.SpawnShape();
-            }
-        }
-        if(GameOverPanel)
+        if (GameOverPanel)
         {
             GameOverPanel.SetActive(false);
         }
@@ -97,19 +73,21 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        if (!_gameBoard || !_spawner || !_activeShape || _gameOver || !_soundManager || !_scoreManager)
+        if (!AreComponentsValid() || _gameOver)
             return;
         PlayerInput();
     }
 
     private void LateUpdate()
     {
-        if(_ghost)
+        if (_ghost)
         {
             _ghost.DrawGhost(_activeShape);
         }
     }
+    #endregion
 
+    #region Input Handling
     private void PlayerInput()
     {
         if (!IsPaused)
@@ -141,49 +119,37 @@ public class GameController : MonoBehaviour
             TogglePause();
         }
     }
+    #endregion
 
-    private void HandleMovementInput()
-    {
-        if ((_inputController.GetPressingRight() && Time.time > _timeToNextKeyLeftRight) || Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            MoveRight();
-        }
-        else if ((_inputController.GetPressingLeft() && Time.time > _timeToNextKeyLeftRight) || Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            MoveLeft();
-        }
-    }
-
+    #region Shape Manipulation
     private void MoveRight()
     {
         _activeShape.MoveRight();
         _timeToNextKeyLeftRight = Time.time + KeyRepeatRateLeftRight;
+        bool isValid = _gameBoard.IsValidPosition(_activeShape);
 
-        if (!_gameBoard.IsValidPosition(_activeShape))
+        if (!isValid)
         {
             _activeShape.MoveLeft();
-            PlaySound(_soundManager.ErrorSound, 0.5f);
         }
-        else
-        {
-            PlaySound(_soundManager.MoveSound, 0.5f);
-        }
+        PlayMoveOrErrorSound(isValid);
+    }
+
+    private void PlayMoveOrErrorSound(bool isValid)
+    {
+        PlaySound(isValid ? _soundManager.MoveSound : _soundManager.ErrorSound, 0.5f);
     }
 
     private void MoveLeft()
     {
         _activeShape.MoveLeft();
         _timeToNextKeyLeftRight = Time.time + KeyRepeatRateLeftRight;
-
-        if (!_gameBoard.IsValidPosition(_activeShape))
+        bool isValid = _gameBoard.IsValidPosition(_activeShape);
+        if (!isValid)
         {
             _activeShape.MoveRight();
-            PlaySound(_soundManager.ErrorSound, 0.5f);
         }
-        else
-        {
-            PlaySound(_soundManager.MoveSound, 0.5f);
-        }
+        PlayMoveOrErrorSound(isValid);
     }
 
     private void HandleRotationInput()
@@ -220,10 +186,12 @@ public class GameController : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Shape Landing
     private void LandShape()
     {
-        if(_activeShape)
+        if (_activeShape)
         {
             ResetInputTimers();
             _inputController.FalsePressingDown();
@@ -283,25 +251,26 @@ public class GameController : MonoBehaviour
         _timeToNextKeyRotate = Time.time;
         _timeToNextKeyLeftRight = Time.time;
     }
+    #endregion
 
+    #region Game Control
     private void GameOver()
     {
         _activeShape.MoveUp();
         _gameOver = true;
         Debug.LogWarning(_activeShape.name + " is over limit");
-        StartCoroutine(GameOverRoutine());
+        StartCoroutine(ShowGameOverEffects());
         PlaySound(_soundManager.GameOverSound, 3f);
         PlaySound(_soundManager.GameOverVocalClip, 3f);
     }
 
-
-    IEnumerator GameOverRoutine()
+    IEnumerator ShowGameOverEffects()
     {
         if (GameOverFx)
         {
             GameOverFx.Play();
         }
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSecondsRealtime(0.5f);
         if (GameOverPanel)
         {
             GameOverPanel.SetActive(true);
@@ -313,19 +282,23 @@ public class GameController : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+    #endregion
 
-    private void PlaySound(AudioClip clip, float volMultiplier =1f)
+    #region Sound Handling
+    private void PlaySound(AudioClip clip, float volMultiplier = 1f)
     {
-        if(_soundManager.MoveSound && _soundManager.FxEnabled)
+        if (_soundManager.MoveSound && _soundManager.FxEnabled)
         {
-            AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position,Mathf.Clamp(_soundManager.FxVolume * volMultiplier,0.05f,1f));
+            AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position, Mathf.Clamp(_soundManager.FxVolume * volMultiplier, 0.05f, 1f));
         }
     }
+    #endregion
 
+    #region UI Handling
     public void ToggleRotDirection()
     {
         _clockwise = !_clockwise;
-        if(RotIconToggle)
+        if (RotIconToggle)
         {
             RotIconToggle.ToggleIcon(_clockwise);
         }
@@ -333,7 +306,7 @@ public class GameController : MonoBehaviour
 
     public void TogglePause()
     {
-        if(_gameOver)
+        if (_gameOver)
         {
             return;
         }
@@ -350,6 +323,32 @@ public class GameController : MonoBehaviour
 
             Time.timeScale = IsPaused ? 0 : 1;
         }
-
     }
+    #endregion
+
+    #region Validation Methods
+    private void ValidateInstances()
+    {
+        ValidateInstance(InputController.Instance, ref _inputController, "InputController");
+        ValidateInstance(Spawner.Instance, ref _spawner, "Spawner");
+        ValidateInstance(Board.Instance, ref _gameBoard, "Board");
+        ValidateInstance(SoundManager.Instance, ref _soundManager, "SoundManager");
+        ValidateInstance(ScoreManager.Instance, ref _scoreManager, "ScoreManager");
+        ValidateInstance(Ghost.Instance, ref _ghost, "Ghost");
+    }
+
+    private void ValidateInstance<T>(T instance, ref T field, string instanceName) where T : class
+    {
+        if (instance == null)
+        {
+            throw new NullReferenceException($"{instanceName} instance is not defined.");
+        }
+        field = instance;
+    }
+
+    private bool AreComponentsValid()
+    {
+        return _gameBoard && _spawner && _activeShape && _soundManager && _scoreManager;
+    }
+    #endregion
 }
